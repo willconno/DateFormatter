@@ -26,6 +26,14 @@ DateFormatter.isDatePastOrFuture(dateTime, date);
 // returns 0 if dates are exactly the same
 // returns -2 otherwise
 ```
+Check if a date is withi a range from today.
+```
+Calendar pastCalendar = Calendar.getInstance();
+pastCalendar.set(DAY_OF_MONTH, -3);
+
+DateFormatter.isWithinDayRange(pastCalendar.getTime(), -7);
+// return true. pastCalendar is within the past 7 days.
+```
 
 ## DateFormatter.Type Enum
 
