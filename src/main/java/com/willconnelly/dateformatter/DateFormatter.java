@@ -14,9 +14,6 @@ import java.util.TimeZone;
  */
 public class DateFormatter {
 
-    private static boolean contacts;
-    private static boolean notes;
-
     public enum Type {
 
         FULL_MONTH("dd MMMM yyyy"),
@@ -51,36 +48,20 @@ public class DateFormatter {
     public DateFormatter(){
     }
 
-    private static DateFormatter INSTANCE;
-
     public static DateFormatter from(Date date){
-        if (INSTANCE == null){
-            INSTANCE = new DateFormatter();
-        }
 
-        INSTANCE.withDate(date);
 
-        return INSTANCE;
+        return new DateFormatter().withDate(date);
     }
     public static DateFormatter from(long date){
-        if (INSTANCE == null){
-            INSTANCE = new DateFormatter();
-        }
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
-        INSTANCE.withDate(cal.getTime());
 
-        return INSTANCE;
+        return new DateFormatter().withDate(cal.getTime());
     }
     public static DateFormatter from(String date){
-        if (INSTANCE == null){
-            INSTANCE = new DateFormatter();
-        }
 
-        init(date);
-        INSTANCE.withDate(date);
-
-        return INSTANCE;
+        return new DateFormatter().withDate(date);
     }
 
 
@@ -88,30 +69,22 @@ public class DateFormatter {
     private String mSDFPattern;
     private CharSequence mResult;
 
-    public DateFormatter(Date date){
-        init(date);
-    }
 
-    public DateFormatter(String string){
-
-        init(string);
-    }
-
-    public DateFormatter withDate(Date date){
+    private DateFormatter withDate(Date date){
         init(date);
         return this;
     }
-    public DateFormatter withDate(String string){
+    private DateFormatter withDate(String string){
         init(string);
         return this;
     }
 
-    private static void init(String string){
+    private void init(String string){
         if (string == null) return;
-        INSTANCE.mResult = string;
+        mResult = string;
         if (!string.contains("-")) {
-            if (string.length() == 11 || string.length() == 12)  INSTANCE.mSDFPattern = "dd MMM yyyy";
-            else  INSTANCE.mSDFPattern = "dd MMMM yyyy";
+            if (string.length() == 11 || string.length() == 12)  mSDFPattern = "dd MMM yyyy";
+            else  mSDFPattern = "dd MMMM yyyy";
         }
         else if(string.contains(" - ")){
             String[] split = string.split(" - ");
@@ -123,18 +96,18 @@ public class DateFormatter {
             if (split[1].length() == 5) time = "HH:mm";
             else time = "hh:mm aa";
 
-            INSTANCE.mSDFPattern = date + "' - '" + time;
+            mSDFPattern = date + "' - '" + time;
         }
         else if (string.contains(" ")){
-            if (string.length() == 19)  INSTANCE.mSDFPattern = "yyyy-MM-dd HH:mm:ss";
+            if (string.length() == 19)  mSDFPattern = "yyyy-MM-dd HH:mm:ss";
         }
-        else if (string.length() == 5)  INSTANCE.mSDFPattern = "MM-dd";
-        else if (string.length() == 10)  INSTANCE.mSDFPattern = "yyyy-MM-dd";
-        else if (string.length() == 16)  INSTANCE.mSDFPattern = "yyyy-MM-dd'T'HH:mm";
-        else if (string.length() == 19)  INSTANCE.mSDFPattern = "yyyy-MM-dd'T'HH:mm:ss";
-        else if (string.length() > 19 )  INSTANCE.mSDFPattern = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+        else if (string.length() == 5)  mSDFPattern = "MM-dd";
+        else if (string.length() == 10)  mSDFPattern = "yyyy-MM-dd";
+        else if (string.length() == 16)  mSDFPattern = "yyyy-MM-dd'T'HH:mm";
+        else if (string.length() == 19)  mSDFPattern = "yyyy-MM-dd'T'HH:mm:ss";
+        else if (string.length() > 19 )  mSDFPattern = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 
-        INSTANCE.mSDF = new SimpleDateFormat( INSTANCE.mSDFPattern, Locale.getDefault());
+        mSDF = new SimpleDateFormat( mSDFPattern, Locale.getDefault());
     }
     private void init(Date date){
 
@@ -143,8 +116,8 @@ public class DateFormatter {
         mSDF = new SimpleDateFormat(mSDFPattern, Locale.getDefault());
     }
     public static DateFormatter from(int year, int month, int dayOfMonth){
-        if (INSTANCE == null) INSTANCE = new DateFormatter();
-//        INSTANCE.mToUTC = true;
+        DateFormatter df= new DateFormatter();
+//        mToUTC = true;
         String sYear = String.valueOf(year);
         String sMonth = String.valueOf(month + 1);
         String sDay = String.valueOf(dayOfMonth);
@@ -153,7 +126,7 @@ public class DateFormatter {
         if(sMonth.length() == 1) sMonth = "0" + sMonth;
         if(sDay.length() == 1) sDay = "0" + sDay;
 
-        INSTANCE.mResult = new StringBuilder()
+        df.mResult = new StringBuilder()
                 .append(sYear)
                 .append(sMonth)
                 .append(sDay);
@@ -170,21 +143,21 @@ public class DateFormatter {
         while (monthLength-- > 0){ iMonth.append("M"); }
         while (dayLength-- > 0){ iDay.append("d"); }
 
-        INSTANCE.mSDF = new SimpleDateFormat(iYear.toString() + iMonth.toString() + iDay.toString(), Locale.getDefault());
+        df.mSDF = new SimpleDateFormat(iYear.toString() + iMonth.toString() + iDay.toString(), Locale.getDefault());
 
-        return INSTANCE;
+        return df;
     }
     public static DateFormatter from(int hourOfDay, int minute){
-        if (INSTANCE == null) INSTANCE = new DateFormatter();
+        DateFormatter df = new DateFormatter();
 
-//        INSTANCE.mToUTC = true;
+//        mToUTC = true;
         String sHour = String.valueOf(hourOfDay);
         String sMinute = String.valueOf(minute);
 
         if(sHour.length() == 1) sHour = "0" + sHour;
         if(sMinute.length() == 1) sMinute = "0" + sMinute;
 
-        INSTANCE.mResult = new StringBuilder()
+        df.mResult = new StringBuilder()
                 .append(sHour)
                 .append(sMinute);
 
@@ -197,9 +170,9 @@ public class DateFormatter {
         while (hourLength-- > 0){ iHour.append("H"); }
         while (minuteLength-- > 0){ iMinute.append("m"); }
 
-        INSTANCE.mSDF = new SimpleDateFormat(iHour.toString() + iMinute.toString(), Locale.getDefault());
+        df.mSDF = new SimpleDateFormat(iHour.toString() + iMinute.toString(), Locale.getDefault());
 
-        return INSTANCE;
+        return df;
     }
 
     private Boolean mFromUTC;
@@ -217,43 +190,32 @@ public class DateFormatter {
 
         SimpleDateFormat sdf = new SimpleDateFormat(type == null ? Type.SERVER_TIMEZONE.get() : type.get(), Locale.getDefault());
 
-        if (INSTANCE.mFromUTC != null) INSTANCE.mSDF.setTimeZone(TimeZone.getTimeZone("UTC"));
-        if (INSTANCE.mToUTC != null) sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        if (mFromUTC != null) mSDF.setTimeZone(TimeZone.getTimeZone("UTC"));
+        if (mToUTC != null) sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         String result = "";
 
         try {
-            if (INSTANCE.mResult != null) {
-                result = sdf.format(INSTANCE.mSDF.parse(INSTANCE.mResult.toString()));
+            if (mResult != null) {
+                result = sdf.format(mSDF.parse(mResult.toString()));
             }
             else {
                 result = sdf.format(Calendar.getInstance().getTime());
             }
         } catch (ParseException e) { e.printStackTrace(); }
 
-        reset();
         return result;
     }
 
-    private void reset(){
-        if (INSTANCE == null) return;
 
-        INSTANCE.mResult = null;
-        INSTANCE.mSDF = null;
-        INSTANCE.mToUTC = null;
-        INSTANCE.mFromUTC = null;
-        INSTANCE.mSDFPattern = null;
-    }
-
-    public Date toDate(){
+    private Date toDate(){
 
         Date result = new Date();
         try {
-            result = INSTANCE.mSDF.parse(INSTANCE.mResult.toString());
+            result = mSDF.parse(mResult.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        reset();
         return result;
     }
 
