@@ -1,6 +1,6 @@
 # DateFormatter
 
-Simple ISO 8601 date formatting library for Android. 
+Simple ISO 8601 date formatting library for ClientVault products. Formatted as yyyy-mm-dd'T'hh:MM:ssZZZZ. May not be usefult for other applications 
 
 ## Usage
 
